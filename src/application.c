@@ -9,7 +9,7 @@ bool application_init(application_init_info init_info) {
     renderer_info.window_name = init_info.app_name;
     renderer_info.width = init_info.width;
     renderer_info.height = init_info.height;
-    renderer_init(renderer_info);
+    if (!renderer_init(renderer_info)) return false;
     return true;
 }
 
@@ -27,7 +27,8 @@ bool application_run()
 
         // Render logic
         if (renderer_begin_frame() == 0) continue;
-
+        unsigned int cyan = 0xFF00FFFF;
+        renderer_fill_colour(cyan);
         renderer_end_frame();
     }
     return false;
