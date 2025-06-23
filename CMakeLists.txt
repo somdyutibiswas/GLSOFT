@@ -9,6 +9,7 @@ project(GLSOFT)
 add_executable(App
     src/main.c
     src/application.h src/application.c
+    src/renderer.h src/renderer.c
 )
 
 add_subdirectory(SDL)

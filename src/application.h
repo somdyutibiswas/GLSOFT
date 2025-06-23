@@ -1,6 +1,5 @@
 #pragma once
 #include <stdbool.h>
-#include<SDL3/SDL.h>
 
 typedef struct application_init_info {
     const char* app_name;
@@ -11,7 +10,7 @@ typedef struct application_init_info {
 typedef struct application_state
 {
     bool running;
-    SDL_Window* window;
+    
 } application_state;
 
 bool application_init(application_init_info init_info);
