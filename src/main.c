@@ -1,31 +1,19 @@
 #include<stdio.h>
-#include<SDL3/SDL.h>
+
+#include <application.h>
 
 int main(){
     printf("Booting graphics library software\n");
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Failed to initialise SDL\n");
-        return 1;
-    }
+    application_init_info init_info;
+    init_info.app_name = "GLSOFT";
+    init_info.width = 1200;
+    init_info.height = 600;
+    if (!application_init(init_info)) return 1;
 
-    SDL_Window* window = SDL_CreateWindow("GLSOFT", 800, 600, SDL_WINDOW_RESIZABLE);
-    if(window == 0) return 1;
-
-    bool running = true;
-    SDL_Event event ;
-
-    while(running){
-        while(SDL_PollEvent(&event)){
-            if(event.type == SDL_EVENT_QUIT) {
-                running = false;
-            }
-        }
-        // Render logic
-    }
-
+    if (!application_run()) return 1;
+    
     printf("Shutting down graphics library software\n");
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    application_shutdown();
 
     return 0;
 }

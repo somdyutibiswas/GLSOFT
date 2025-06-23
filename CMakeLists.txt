@@ -7,7 +7,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 project(GLSOFT)
 
 add_executable(App
-    src/main.c 
+    src/main.c
+    src/application.h src/application.c
 )
 
 add_subdirectory(SDL)
