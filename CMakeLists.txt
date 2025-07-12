@@ -10,6 +10,7 @@ add_executable(App
     src/main.c
     src/application.h src/application.c
     src/renderer.h src/renderer.c
+    src/math_utils.h src/math_utils.c
 )
 
 add_subdirectory(SDL)

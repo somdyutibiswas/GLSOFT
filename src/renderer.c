@@ -1,5 +1,7 @@
 #include "renderer.h"
 #include<stdio.h>
+#include <math.h>
+#include "math_utils.h"
 
 renderer_state state;
 
@@ -79,4 +81,47 @@ void renderer_fill_colour(unsigned int colour) {
             }
         }
     }
+}
+
+void renderer_draw_line(int x0, int y0, int x1, int y1, unsigned int colour){
+    if(!state.framebuffer) {
+        printf("Framebuffer cannot be null pointer.");
+    }
+    else {
+        bool steep = false;
+        if (abs(x0 - x1) < abs(y0 - y1)){
+            swap(&x0 , &y0);
+            swap(&x1, &y1);
+            steep = true;
+        }
+        if (x0 > x1){
+            swap(&x0, &x1);
+            swap(&y0, &y1);
+        }
+        int dx = x1 - x0;
+        int dy = abs(y1 - y0);
+        int error2 = 0;
+        int derror2 = dy*2;
+        int y = y0;
+        int ystep = (y1 > y0) ? 1 : -1;
+        for (int x = x0; x <= x1; ++x){
+            if (steep){
+                if (y >= 0 && y < state.width && x >= 0 && x < state.height){
+                    state.framebuffer[x* state.framebuffer_pitch + y] = colour;
+                }
+            }
+            else{
+                if (x >=0 && x < state.width && y >= 0 && y < state.height){
+                    state.framebuffer[y*state.framebuffer_pitch + x] = colour;
+                }
+            }
+            error2 += derror2;
+            if (error2 > dx*2){
+                y += ystep;
+                error2 -= dx*2;
+            }
+        }
+
+    }
+
 }

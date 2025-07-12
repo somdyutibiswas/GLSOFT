@@ -31,3 +31,4 @@ void renderer_end_frame();
 
 void renderer_fill_colour(unsigned int colour);
 
+void renderer_draw_line(int x0, int y0, int x1, int y1, unsigned int colour);
