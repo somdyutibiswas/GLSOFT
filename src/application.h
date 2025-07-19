@@ -10,6 +10,8 @@ typedef struct application_init_info {
 typedef struct application_state
 {
     bool running;
+    unsigned int width;
+    unsigned int height;
     
 } application_state;
 

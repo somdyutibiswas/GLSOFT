@@ -3,7 +3,7 @@
 #include <math.h>
 #include "math_utils.h"
 
-renderer_state state;
+renderer_state rend_state;
 
 bool renderer_init(renderer_init_info init_info)
 {
@@ -12,79 +12,79 @@ bool renderer_init(renderer_init_info init_info)
         return false;
     }
 
-    state.width = init_info.width;
-    state.height = init_info.height;
+    rend_state.width = init_info.width;
+    rend_state.height = init_info.height;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Failed to initialise SDL\n");
         return false;
     }
 
-    state.window = SDL_CreateWindow(init_info.window_name, state.width, state.height, SDL_WINDOW_RESIZABLE);
-    if(state.window == 0) return false;
+    rend_state.window = SDL_CreateWindow(init_info.window_name, rend_state.width, rend_state.height, SDL_WINDOW_RESIZABLE);
+    if(rend_state.window == 0) return false;
 
-    state.sdl_renderer = SDL_CreateRenderer(state.window, 0);
-    if(state.sdl_renderer == 0) return false;
+    rend_state.sdl_renderer = SDL_CreateRenderer(rend_state.window, 0);
+    if(rend_state.sdl_renderer == 0) return false;
 
     for (int i = 0; i < FRAMEBUFFER_COUNT ; i++){
-        state.textures[i] = SDL_CreateTexture(state.sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, state.width, state.height);
-        if(state.textures[i] == 0) return false;
+        rend_state.textures[i] = SDL_CreateTexture(rend_state.sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, rend_state.width, rend_state.height);
+        if(rend_state.textures[i] == 0) return false;
     }
 
-    state.current_buffer = 0;
-    state.framebuffer = 0;
+    rend_state.current_buffer = 0;
+    rend_state.framebuffer = 0;
 
     return true;
 }
 
 void renderer_sthutdown()
 {
-    SDL_DestroyWindow(state.window);
+    SDL_DestroyWindow(rend_state.window);
     SDL_Quit();
 }
 
 void *renderer_begin_frame()
 {   
-    if(state.framebuffer) return state.framebuffer;
+    if(rend_state.framebuffer) return rend_state.framebuffer;
     void* pixels = 0;
     int pitch;
-    if(!SDL_LockTexture(state.textures[state.current_buffer], 0, &pixels, &pitch)){
+    if(!SDL_LockTexture(rend_state.textures[rend_state.current_buffer], 0, &pixels, &pitch)){
         printf("Texture lock failed: %s \n", SDL_GetError());
         return 0;
     }
-    state.framebuffer_pitch = pitch/sizeof(unsigned int);
-    state.framebuffer = (unsigned int*)pixels;
+    rend_state.framebuffer_pitch = pitch/sizeof(unsigned int);
+    rend_state.framebuffer = (unsigned int*)pixels;
     
-    return state.framebuffer;
+    return rend_state.framebuffer;
 }
 
 void renderer_end_frame()
 {   
-    if(state.framebuffer){
-        SDL_UnlockTexture(state.textures[state.current_buffer]);
-        state.framebuffer = 0;
+    if(rend_state.framebuffer){
+        SDL_UnlockTexture(rend_state.textures[rend_state.current_buffer]);
+        rend_state.framebuffer = 0;
     }
-    SDL_RenderClear(state.sdl_renderer);
-    SDL_RenderTextureRotated(state.sdl_renderer, state.textures[state.current_buffer], 0, 0, 0.0, 0, SDL_FLIP_VERTICAL);
-    SDL_RenderPresent(state.sdl_renderer);
-    state.current_buffer = (state.current_buffer + 1)%FRAMEBUFFER_COUNT;
+    SDL_RenderClear(rend_state.sdl_renderer);
+    SDL_RenderTextureRotated(rend_state.sdl_renderer, rend_state.textures[rend_state.current_buffer], 0, 0, 0.0, 0, SDL_FLIP_VERTICAL);
+    SDL_RenderPresent(rend_state.sdl_renderer);
+    rend_state.current_buffer = (rend_state.current_buffer + 1)%FRAMEBUFFER_COUNT;
 }
 
 void renderer_fill_colour(unsigned int colour) {
-    if(!state.framebuffer) {
+    if(!rend_state.framebuffer) {
         printf("Framebuffer cannot be null pointer.");
     }
     else {
-        for(int y = 0; y < state.height ; y++){
-            for(int x = 0; x < state.width ; x++){
-                state.framebuffer[y * state.framebuffer_pitch + x] = colour;
+        for(int y = 0; y < rend_state.height ; y++){
+            for(int x = 0; x < rend_state.width ; x++){
+                rend_state.framebuffer[y * rend_state.framebuffer_pitch + x] = colour;
             }
         }
     }
 }
 
 void renderer_draw_line(int x0, int y0, int x1, int y1, unsigned int colour){
-    if(!state.framebuffer) {
+    if(!rend_state.framebuffer) {
         printf("Framebuffer cannot be null pointer.");
     }
     else {
@@ -106,13 +106,13 @@ void renderer_draw_line(int x0, int y0, int x1, int y1, unsigned int colour){
         int ystep = (y1 > y0) ? 1 : -1;
         for (int x = x0; x <= x1; ++x){
             if (steep){
-                if (y >= 0 && y < state.width && x >= 0 && x < state.height){
-                    state.framebuffer[x* state.framebuffer_pitch + y] = colour;
+                if (y >= 0 && y < rend_state.width && x >= 0 && x < rend_state.height){
+                    rend_state.framebuffer[x* rend_state.framebuffer_pitch + y] = colour;
                 }
             }
             else{
-                if (x >=0 && x < state.width && y >= 0 && y < state.height){
-                    state.framebuffer[y*state.framebuffer_pitch + x] = colour;
+                if (x >=0 && x < rend_state.width && y >= 0 && y < rend_state.height){
+                    rend_state.framebuffer[y*rend_state.framebuffer_pitch + x] = colour;
                 }
             }
             error2 += derror2;
