@@ -51,8 +51,6 @@ bool application_run()
         unsigned int color = 0x44AAAAAA;
         grid_draw(app_state.width, app_state.height, color);
 
-
-
         unsigned int cyan = 0xFFC8E9C9;
         // // renderer_fill_colour(cyan);
         // // renderer_draw_line(200, 50, 500, 30, cyan);
