@@ -11,6 +11,7 @@ add_executable(App
     src/application.h src/application.c
     src/renderer.h src/renderer.c
     src/math_utils.h src/math_utils.c
+    src/sorting_algo.h src/sorting_algo.c 
 )
 
 add_subdirectory(SDL)

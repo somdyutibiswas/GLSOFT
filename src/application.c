@@ -2,7 +2,9 @@
 #include<SDL3/SDL.h>
 #include <renderer.h>
 #include <math.h>
+#include<windows.h>
 #include "math_utils.h"
+#include "sorting_algo.h"
 
 #define AXIS_LENGTH 1024
 
@@ -26,6 +28,15 @@ bool application_run()
 
     int data[100];
     generate_shuffled_array(data, 100);
+
+    
+    // merge sort ->
+    int* aux = malloc(100*sizeof(int));
+    merge_sort_state state ;
+    state.width = 1;
+    state.i = 0;
+    state.size = 100;
+    state.sorted = 0;
 
     while(app_state.running){
         while(SDL_PollEvent(&event)){
@@ -64,12 +75,19 @@ bool application_run()
 
         // rect_draw(200, 100, 300, 200, cyan);
         
+
+        //sorting ->
+        // bool result = bubble_sort(data, 100);
+        
+        merge_sort(data, 100, aux, 100, &state);
         for (int i = 0 ; i < 100; i++){
             bar_plot(i, data[i], cyan);
         }
         
 
         renderer_end_frame();
+
+        Sleep(128);
     }
     return false;
 }
